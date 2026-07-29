@@ -57,3 +57,21 @@ The agent system stores session data in Redis keyed by user/profile ID via `sess
 ### Verdict
 
 All checklist items pass. Ready to implement in Weeks 8–9.
+
+---
+
+## Week 8 - Reproduction & solution planning
+
+**Reproduction commit link:** [pending — commit after repro test is pushed]
+
+**Reproduction summary:**
+
+I reproduced the bug with a unit test in `tests/unit/test_orchestrator_session.py`. The test runs two reviews for the same `profile_id`: first with `readme_content` (triggers `readme_scorer`), then with `resume_text` only (triggers `skill_extractor`). After the second run, the Redis-backed session still contains the `readme_scorer` key from review #1 because `Orchestrator.run()` merges old session state via `session_state.update(results)` instead of starting fresh.
+
+**PLAN.md link:** [PLAN.md](https://github.com/shrimant100/pathreview/blob/fix/43-clear-agent-session-state/PLAN.md)
+
+**Walkthrough video (recommended):** [link to your Loom video, ≤2 min – recommended, not graded]
+
+**Blockers or open questions:**
+
+Need to confirm whether parallel reviews for the same profile are possible (race if we delete session at start). Otherwise ready to implement in Week 9.

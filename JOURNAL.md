@@ -62,7 +62,7 @@ All checklist items pass. Ready to implement in Weeks 8–9.
 
 ## Week 8 - Reproduction & solution planning
 
-**Reproduction commit link:** [pending — commit after repro test is pushed]
+**Reproduction commit link:** https://github.com/shrimant100/pathreview/commit/33edc43
 
 **Reproduction summary:**
 

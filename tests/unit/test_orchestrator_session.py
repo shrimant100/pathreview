@@ -77,3 +77,32 @@ class TestOrchestratorSessionState:
         # After a portfolio update, tools from the first review must not linger.
         assert "readme_scorer" not in stored_session
         assert "skill_extractor" in stored_session
+
+    def test_first_review_persists_session_when_no_prior_state(
+        self, session_store: SessionStore, tools: dict
+    ) -> None:
+        """First review for a profile should store tool results normally."""
+        profile_id = "profile-new-user"
+
+        orchestrator = Orchestrator(tools=tools, session_store=session_store)
+        orchestrator.run(profile_id, {"readme_content": "First portfolio README."})
+
+        stored_session = session_store.get(profile_id)
+        assert stored_session is not None
+        assert "readme_scorer" in stored_session
+        assert "market_analyzer" in stored_session
+
+    def test_empty_plan_clears_prior_session(
+        self, session_store: SessionStore, tools: dict
+    ) -> None:
+        """A review with no tools should not retain keys from an earlier review."""
+        profile_id = "profile-empty-plan"
+
+        first_orchestrator = Orchestrator(tools=tools, session_store=session_store)
+        first_orchestrator.run(profile_id, {"readme_content": "README from review #1."})
+
+        second_orchestrator = Orchestrator(tools=tools, session_store=session_store)
+        second_orchestrator.run(profile_id, {})
+
+        stored_session = session_store.get(profile_id)
+        assert stored_session == {}

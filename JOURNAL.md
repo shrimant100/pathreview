@@ -123,3 +123,43 @@ Per course guidance, **"passes" means this PR introduces no new failures** — n
 **`make test-unit`:** 53 failed, 378 passed (431 collected) before and after my changes. All 3 tests in `tests/unit/test_orchestrator_session.py` pass. Pre-existing failures are in unrelated modules (`test_bias_detector`, `test_faithfulness_checker`, `test_review_service`, etc.).
 
 **`make check`:** fails at lint with 82 pre-existing ruff errors in api/, ingestion/, rag/, safety/, and tests/. My edited files do not add new lint or type errors.
+
+---
+
+## Week 10 – Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No – still awaiting review
+
+**Summary of feedback:**
+
+No comments or reviews on [PR #1](https://github.com/shrimant100/pathreview/pull/1) as of submission. Per course notes, formal reviewer feedback is not expected for Summer 2026 — documented here and moving on.
+
+**How you responded:**
+
+N/A — no feedback received.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+
+Environment setup on Windows took longer than the fix itself: ChromaDB crashed on NumPy 2.x, `make setup` failed in PowerShell, and the first pre-commit run hung while installing hook environments. I also underestimated how many upstream unit tests and lint errors already existed — it took a while to understand that "passes" meant no *new* failures, not a fully green suite.
+
+**What did you learn about working in a large codebase?**
+
+You have to read before you edit. The bug looked like a one-line merge problem, but tracing it meant following `Orchestrator.run()` → `SessionStore` → the test plan in `_build_plan()`. In someone else's repo you also inherit their tooling (pre-commit, ruff, mypy, conventional commits) and need to match those conventions instead of treating it like a solo project.
+
+**How did AI tools help – and where did they fall short?**
+
+AI was most useful for Docker troubleshooting, drafting `PLAN.md` and the failing repro test, and navigating git remotes/fork setup. It fell short when it almost committed dozens of unrelated formatter changes from my working tree — I had to stage only the files for issue #43. It also couldn't replace actually running `make test-unit` and reading the pre-existing failure baseline myself.
+
+**What would you do differently if you started over?**
+
+Use Git Bash from day one on Windows, run `make test-unit` and `make check` once before touching code to establish a baseline, and commit in smaller chunks (repro test → fix → journal) without letting formatter runs dirty unrelated files.
+
+**What are you most proud of from this module?**
+
+Writing a failing test that reproduced the exact stale-session behavior before implementing the fix — when it turned green after two small changes in `orchestrator.py`, I was confident the PR solved the real bug and not just a symptom.
